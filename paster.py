@@ -14,6 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+import sys
 import argparse
 from services import paste, SERVICES, list_details, LISTS
 from config import DEFAULTS
@@ -65,4 +66,7 @@ list_parser.set_defaults(func=list_details)
 args = parser.parse_args()
             
 #Get the paste service according to supplied argument
-args.func(vars(args))
+try:
+    args.func(vars(args))
+except KeyboardInterrupt:
+    sys.exit(1)  
