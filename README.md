@@ -1,10 +1,10 @@
 Paster
 ======
-*A generic pastebin pasting tool*
+*A generic pastebin posting tool*
 
 Supported Paste services:
  
- - **Dpaste** (http://dpaste.com/)  
+ - **Dpaste** (http://dpaste.com/)
    A django base simple and popular pastebin
    
  - **Pastebin** (http://pastebin.com/)  
@@ -15,12 +15,24 @@ And many more will be added soon
 Usage
 -----
 
-    paster.py [-h] [-s syntax] [-t title] [-n name/email] [-v service]
-              [-e extra] [-d] [-p] [-c] [-f]
-              content
+    usage: paster [-h] {list,paste} ...
 
-Help
-----
+    optional arguments:
+      -h, --help    show this help message and exit
+
+    subcommands:
+      available subcommands
+
+      {list,paste}  additional help
+        paste       paste a snippet
+        list        list various available properties and settings
+
+###Subcommands
+**paste**  
+
+    usage: paster paste [-h] [-s syntax] [-t title] [-n name/email] [-v service]
+                        [-e extra] [-d] [-p] [-c] [-f]
+                        content
 
     positional arguments:
       content               the content
@@ -41,6 +53,24 @@ Help
       -p, --private         hold the paste (delay in deletion)
       -c, --command         post output of command supplied as content
       -f, --file            post output of file supplied as content
+
+            
+**list**
+
+    usage: paster list [-h] [-v service] type
+
+    positional arguments:
+      type                  the property to be listed
+      currently available:
+        
+        - syntax: list of syntax/languages/formats available
+        - services: list of services available
+        - configs: the existing configuration settings
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -v service , --service service 
+                            specify the pastebin service to be used
 
 Config
 ------

@@ -17,7 +17,7 @@ import urllib
 import urllib2
 import subprocess
 
-from config import config
+from config import config, DEFAULTS
 
 GET = 1
 POST = 2
@@ -32,9 +32,14 @@ def register_service(name, Service):
     '''
     SERVICES[name] = Service
 
-def get_service(name):
-    return SERVICES[name]
-    
+def get_service(data):
+    return SERVICES[data['service']](data)
+
+def paste(data):
+    #Called for sub-method `paste`
+    service = get_service(data)
+    return service.url()
+       
 class BasePaste(object):
     '''
     A base paste. Pastes directly based on the data from parsed args.
@@ -64,14 +69,15 @@ class BasePaste(object):
         '''
         Some data processing common for all services.
         No need to override this.
-        '''        
+        '''
         data = self.data
-        data_content = data['content'][0]            
-            
+        data_content = data['content'][0]
+
         if data['command']:
             try:
                 call = subprocess.Popen(data_content.split(),
-                                        stderr=subprocess.PIPE, stdout = subprocess.PIPE)
+                                        stderr=subprocess.PIPE,
+                                        stdout = subprocess.PIPE)
                 out, err = call.communicate()
                 content = out
             except OSError:
@@ -94,12 +100,6 @@ class BasePaste(object):
         else:
             content = data_content
 
-        if data['list_syntax']:
-            self.list_syntax()
-            content = ''
-        elif not data_content:
-            print 'Provide some content to form the paste or use --help/-h flags for help'
-            
         self.data['content'] = content
 
         if not self.SYNTAX_DICT.get(self.data['syntax'], False):
@@ -112,7 +112,7 @@ class BasePaste(object):
         servicel
         '''
         return self.data
-    
+
     def get_response(self):
         '''
         Returns response according submitted the data and method.
@@ -150,7 +150,7 @@ class BasePaste(object):
         if url:
             print 'Your paste has been published at %s' %(url)
             return url
-        else:            
+        else:
             return None
 
     def __str__(self):
@@ -172,8 +172,8 @@ class Dpaste(BasePaste):
     }
 
     def process_data(self):
-        self.data['hold'] = 'on' if self.data['hold'] else ''        
-        self.data['language']= self.data['syntax']        
+        self.data['hold'] = 'on' if self.data['hold'] else ''
+        self.data['language']= self.data['syntax']
         return self.data
 
 class PastebinPaste(BasePaste):
@@ -181,12 +181,12 @@ class PastebinPaste(BasePaste):
     A paste for pastebin. Supports pastebin api V3.
     Available configs (edit in ~/.pastercfg):
         [pastebin]
-        api_dev_key = 
-        api_paste_expire_date = 
+        api_dev_key =
+        api_paste_expire_date =
         api_user_name =
         api_user_password =
     '''
-    
+
     TITLE = 'Pastebin'
     URL = 'http://pastebin.com/api/api_post.php'
     SYNTAX_DICT = {
@@ -272,25 +272,25 @@ class PastebinPaste(BasePaste):
             data = {
                 'api_user_name': username,
                 'api_user_password': password,
-                'api_dev_key': self.data['api_dev_key'],                
+                'api_dev_key': self.data['api_dev_key'],
             }
             urlencoded_data = urllib.urlencode(data)
             req = urllib2.Request('http://pastebin.com/api/api_login.php',
-                                  urlencoded_data)            
-            response = urllib2.urlopen(req)            
+                                  urlencoded_data)
+            response = urllib2.urlopen(req)
             return response.read()
-        
+
     def process_response(self):
-        response = self.response        
+        response = self.response
         return self.response.read() if self.response else None
 
     def process_data(self):
         self.data['api_paste_format'] = self.data['syntax'] or 'text'
-        self.data['api_paste_code'] = self.data['content']                
+        self.data['api_paste_code'] = self.data['content']
         self.data['api_paste_name'] = self.data['title']
         if self.data['poster']:
             self.data['api_paste_name'] += ' ' if self.data['title'] else ''
-            self.data['api_paste_name'] += 'by %s' %(self.data['poster'])        
+            self.data['api_paste_name'] += 'by %s' %(self.data['poster'])
         self.data['api_option'] = 'paste'
         self.data['api_paste_private'] = 1 if self.data['private'] else 0
         # Expiry date according to `hold` flag and `api_paste_expire_date`
@@ -316,3 +316,28 @@ class PastebinPaste(BasePaste):
 
 register_service('dpaste', Dpaste)
 register_service('pastebin', PastebinPaste)
+
+# The following functions perform the various listing tasks
+# Accessed through paster list <type>
+def list_services(data):
+    for key in SERVICES.keys():
+        print '\t%s%s' %(key, '*' if key==data['service'] else '')
+
+def list_syntax(data):
+    service = get_service(data)
+    service.list_syntax()
+
+def list_configs(data):    
+    for key in sorted(DEFAULTS.keys()):
+        print '\t%s: %s' %(key, DEFAULTS[key])
+        
+LISTS = {
+    'service': list_services,
+    'syntax': list_syntax,
+    'configs': list_configs,
+}
+
+def list_details(data):
+    #Called for sub-method `list`
+    list_type = data['type'][0]
+    LISTS[list_type](data)
