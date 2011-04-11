@@ -15,10 +15,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 import argparse
-import subprocess
-import pastebin
-import urllib
-import urllib2
+import services
 
 parser = argparse.ArgumentParser(description='Paste to dpaste.com')
 parser.add_argument('-s', '--syntax', metavar='syntax', default="",
@@ -38,29 +35,8 @@ parser.add_argument('-f', '--file', default=False, action='store_true',
 parser.add_argument('content', metavar='content', nargs=1, type=str,
                     help='the content')
 args = parser.parse_args()
+            
+data = vars(args)
 
-if args.command:
-    f = file('/tmp/pstr_command_result.txt', 'w+')
-    subprocess.call(args.content[0], stdout=f)
-    f.close()
-    f = file('/tmp/pstr_command_result.txt')
-    content = f.read()
-    f.close()    
-elif args.file:
-    f = file(args.content[0])
-    content = f.read()
-    f.close()
-else:
-    content = args.content[0]
-              
-data = {
-    'content': content,
-    'syntax': args.syntax,
-    'title': args.title,
-    'poster': args.poster,
-    'hold': args.hold,
-}
-
-pbin = getattr(pastebin, args.pastebin)(data)
-
-print 'Your paste is published at %s' %(pbin.paste())
+paste = getattr(services, args.pastebin)(data)
+paste.get_url()
