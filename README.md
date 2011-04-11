@@ -23,4 +23,3 @@ Help
       -d, --hold            hold the paste (delay in deletion)  
       -c, --command         post output of command supplied as content  
       -f, --file            post output of file supplied as content  
-

@@ -15,9 +15,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 import argparse
+import subprocess
+import pastebin
 import urllib
 import urllib2
-import subprocess
 
 parser = argparse.ArgumentParser(description='Paste to dpaste.com')
 parser.add_argument('-s', '--syntax', metavar='syntax', default="",
@@ -26,6 +27,8 @@ parser.add_argument('-t', '--title', metavar='title', default="",
                     help='title of paste')
 parser.add_argument('-n', '--poster', metavar='name/email ', default="",
                     help='name or email of poster')
+parser.add_argument('-b', '--pastebin', metavar='pastebin ', default="dpaste",
+                    help='specify the pastebin to be used')
 parser.add_argument('-d', '--hold', default=False, action='store_true',
                     help='hold the paste (delay in deletion)')
 parser.add_argument('-c', '--command', default=False, action='store_true',
@@ -49,19 +52,15 @@ elif args.file:
     f.close()
 else:
     content = args.content[0]
-
-if args.hold:
-    hold = 'on'
-else:
-    hold = ''
-    
+              
 data = {
     'content': content,
-    'language': args.syntax,
+    'syntax': args.syntax,
     'title': args.title,
     'poster': args.poster,
-    'hold': hold,
+    'hold': args.hold,
 }
-req = urllib2.Request('http://dpaste.com/', urllib.urlencode(data))
-response = urllib2.urlopen(req)
-print 'Your paste is published at %s' %(response.url)
+
+pbin = getattr(pastebin, args.pastebin)(data)
+
+print 'Your paste is published at %s' %(pbin.paste())
