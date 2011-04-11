@@ -17,7 +17,7 @@ import urllib
 import urllib2
 import subprocess
 
-from config import config, DEFAULTS
+from src.config import config, DEFAULTS
 
 GET = 1
 POST = 2
@@ -332,7 +332,7 @@ def list_configs(data):
         print '\t%s: %s' %(key, DEFAULTS[key])
         
 LISTS = {
-    'service': list_services,
+    'services': list_services,
     'syntax': list_syntax,
     'configs': list_configs,
 }

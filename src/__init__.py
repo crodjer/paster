@@ -12,29 +12,3 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-string  = '''Python=Python
-PythonConsole=Python Interactive/Traceback
-Sql=SQL
-DjangoTemplate=Django Template/HTML
-JScript=JavaScript
-Css=CSS
-Xml=XML
-Diff=Diff
-Ruby=Ruby
-Rhtml=Ruby HTML (ERB)
-Haskell=Haskell
-Apache=Apache Config
-Bash=Bash script'''
-
-syntax_list = string.split('\n')
-print syntax_list
-
-syntax_dict = {}
-
-for syntax in syntax_list:
-    syntax=syntax.split('=')
-    print syntax
-    syntax_dict[syntax[0]]=syntax[1]
-
-print syntax_dict
