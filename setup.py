@@ -37,7 +37,6 @@ setup(name='paster',
       license="GPLv3",
       platforms=["all"],
       classifiers=[
-          'Development Status :: 1 - Dev',
           'Environment :: Console',
           'Intended Audience :: Developers',
           'Intended Audience :: System Administrators',
