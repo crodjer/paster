@@ -98,3 +98,24 @@ The default configuration and available settings:
     api_paste_expire_date =
     api_user_name =
     api_user_password =
+    
+Examples
+--------
+
+Paste some content  
+> pstr paste "some content"
+
+Paste to pastebin  
+> pstr paste -v pastebin "some content"
+
+Paste file contents  
+> pstr paste -f path/to/file/filename.extension
+
+Paste git diff  
+> pstr paste -c "git diff"
+
+List available syntax/languages/formats  
+> pstr list syntax
+
+List available pastebin services  
+> pstr list services
