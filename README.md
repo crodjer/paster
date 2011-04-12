@@ -15,7 +15,7 @@ And many more will be added soon
 Usage
 -----
 
-    usage: paster [-h] {list,paste} ...
+    usage: pstr [-h] {list,paste} ...
 
     optional arguments:
       -h, --help    show this help message and exit
@@ -30,7 +30,7 @@ Usage
 ###Subcommands
 **paste**  
 
-    usage: paster paste [-h] [-s syntax] [-t title] [-n name/email] [-v service]
+    usage: pstr paste [-h] [-s syntax] [-t title] [-n name/email] [-v service]
                         [-e extra] [-d] [-p] [-c] [-f]
                         content
 
@@ -57,7 +57,7 @@ Usage
             
 **list**
 
-    usage: paster list [-h] [-v service] type
+    usage: pstr list [-h] [-v service] type
 
     positional arguments:
       type                  the property to be listed

@@ -34,25 +34,37 @@ import os
 import ConfigParser
 
 config = ConfigParser.ConfigParser()
-config.read(['configs/default.cfg', 'configs/pastebin.cfg', '/etc/paster.cfg',
+config.read(['paster.cfg', '/etc/paster.cfg',             
              os.path.expanduser('~/.pastercfg')])
 
-name = config.get('user', 'name')
-email = config.get('user', 'email')
+def get_config(section, option, default=''):
+    try:
+        config.get(section, option)        
+    except ConfigParser.NoSectionError:
+        return default
+
+def getboolean_config(section, option, default=False):
+    try:
+        config.getboolean(section, option)
+    except ConfigParser.NoSectionError:
+        return default
+
+name = get_config('user', 'name')
+email = get_config('user', 'email')
 
 if name:
     poster = name + (' <%s>' %(email) if email else '')
 else:
     poster = email
 
-service = config.get('preferences', 'service')
-syntax = config.get('preferences', 'syntax')
-extra = config.get('preferences', 'extra')
-title = config.get('preferences', 'title')
-hold = config.getboolean('preferences', 'hold')
-command = config.getboolean('preferences', 'command')
-readfile = config.getboolean('preferences', 'file')
-private = config.getboolean('preferences', 'private')
+service = get_config('preferences', 'service', 'dpaste')
+syntax = get_config('preferences', 'syntax')
+extra = get_config('preferences', 'extra')
+title = get_config('preferences', 'title')
+hold = getboolean_config('preferences', 'hold')
+command = getboolean_config('preferences', 'command')
+readfile = getboolean_config('preferences', 'file')
+private = getboolean_config('preferences', 'private')
 
 DEFAULTS = {
     'poster': poster,

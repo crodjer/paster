@@ -16,11 +16,11 @@
 
 import sys
 import argparse
-from src.services import paste, SERVICES, list_details, LISTS
-from src.config import DEFAULTS
+from paster.services import paste, SERVICES, list_details, LISTS
+from paster.config import DEFAULTS
 
 #Args parser and arguments definitions
-def parse(args):
+def parse():
     parser = argparse.ArgumentParser(description='A generic pastebin tools')
     subparsers = parser.add_subparsers(title='subcommands',
                                        description='available subcommands',

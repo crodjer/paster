@@ -17,7 +17,7 @@ import urllib
 import urllib2
 import subprocess
 
-from src.config import config, DEFAULTS
+from paster.config import get_config, getboolean_config, DEFAULTS
 
 GET = 1
 POST = 2
@@ -266,8 +266,8 @@ class PastebinPaste(BasePaste):
         Get api user key to enable posts from user accounts if username
         and password available.
         '''
-        username = username or config.get('pastebin', 'api_user_name')
-        password = password or config.get('pastebin', 'api_user_password')
+        username = username or get_config('pastebin', 'api_user_name')
+        password = password or get_config('pastebin', 'api_user_password')
         if username and password: 
             data = {
                 'api_user_name': username,
@@ -298,12 +298,13 @@ class PastebinPaste(BasePaste):
         if self.data['hold']:
             self.data['api_paste_expire_date'] = 'N'
         else:
-            self.data['api_paste_expire_date'] = config.get('pastebin',
-                                                            'api_paste_expire_date')\
-                                                or '1M'
+            self.data['api_paste_expire_date'] = get_config('pastebin',
+                                                            'api_paste_expire_date',
+                                                            '1M')
                                                          
-        self.data['api_dev_key'] = config.get('pastebin', 'api_dev_key') or \
-                                   raw_input("Enter your pastebin api key: ")
+        self.data['api_dev_key'] = get_config('pastebin', 'api_dev_key',
+                                              raw_input("Enter your pastebin api key: "))
+                                   
         
         if not self.data['api_dev_key']:
             self.data['content']=''

@@ -15,6 +15,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 import sys
-from src.parser import parse
+from paster.parser import parse
 
-parse(sys.argv)
+parse()
