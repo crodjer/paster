@@ -39,15 +39,16 @@ config.read(['paster.cfg', '/etc/paster.cfg',
 
 def get_config(section, option, default=''):
     try:
-        config.get(section, option)        
+        return config.get(section, option)
     except ConfigParser.NoSectionError:
         return default
 
 def getboolean_config(section, option, default=False):
     try:
-        config.getboolean(section, option)
+        return config.getboolean(section, option) or default
     except ConfigParser.NoSectionError:
-        return default
+        return default  
+    
 
 name = get_config('user', 'name')
 email = get_config('user', 'email')

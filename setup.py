@@ -1,34 +1,31 @@
 #!/usr/bin/env python
-##try:
-##    from setuptools import setup, find_packages
-##    have_setuptools = True
-##except:
-##    from distutils.core import setup
+# Copyright (C) 2011  Rohan Jain
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 from distutils.core import setup
 from sys import version
-try:
-    import markdown
-    #from markdown import markdown
-    markdown_available = True
-except ImportError:
-    markdown_available = False
 
 if version < '2.2.3':
     from distutils.dist import DistributionMetadata
     DistributionMetadata.classifiers = None
     DistributionMetadata.download_url = None
 
-def long_description():
-    DESC = open('README.md').read()
-    if markdown_available:
-        return markdown.markdown(DESC)
-    else:
-        return DESC
-
 setup(name='paster',
       version='0.6',
       description='A generic pastebin posting tool',
-      long_description=long_description(),
+      long_description=open('README.md').read(),
       author='Rohan Jain',
       author_email='crodjer@gmail.com',
       url='https://github.com/crodjer/paster',
@@ -37,9 +34,15 @@ setup(name='paster',
       license="GPLv3",
       platforms=["all"],
       classifiers=[
+          'Development Status :: 3 - Alpha',
           'Environment :: Console',
+          'Environment :: Plugins',
+          'License :: OSI Approved :: GNU General Public License (GPL)',
+          'Natural Language :: English',
+          'Intended Audience :: End Users/Desktop',
           'Intended Audience :: Developers',
           'Intended Audience :: System Administrators',
+          'Topic :: Software Development',
           'Programming Language :: Python',
           ],
       scripts=['pstr'],
