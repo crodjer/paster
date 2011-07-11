@@ -34,12 +34,19 @@ import os
 import ConfigParser
 
 config = ConfigParser.ConfigParser()
-config.read(['paster.cfg', '/etc/paster.cfg',             
+sources = config.read(['paster.cfg', '/etc/paster.cfg',             
              os.path.expanduser('~/.pastercfg')])
 
-def get_config(section, option, default=''):
+def get_config(section, option, allow_empty_option=True, default=""):
     try:
-        return config.get(section, option)
+        value = config.get(section, option)
+        if value is None or len(value) == 0:
+            if allow_empty_option:
+                return ""
+            else:
+                return default
+        else:
+            return value
     except ConfigParser.NoSectionError:
         return default
 

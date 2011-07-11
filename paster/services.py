@@ -16,6 +16,7 @@
 import urllib
 import urllib2
 import subprocess
+import logging
 
 from paster.config import get_config, getboolean_config, DEFAULTS
 
@@ -39,6 +40,8 @@ def paste(data):
     #Called for sub-method `paste`
     service = get_service(data)
     return service.url()
+
+class PasteException(Exception): pass
        
 class BasePaste(object):
     '''
@@ -61,9 +64,9 @@ class BasePaste(object):
         '''
         Prints a list of available syntax for the current paste service
         '''
-        print 'Available syntax for %s:' %(self)
+        logging.info('Available syntax for %s:' %(self))
         for key in self.SYNTAX_DICT.keys():
-            print '\t%-20s%-30s' %(key, self.SYNTAX_DICT[key])
+            logging.info('\t%-20s%-30s' %(key, self.SYNTAX_DICT[key]))
             
     def process_commmon(self):
         '''
@@ -81,7 +84,7 @@ class BasePaste(object):
                 out, err = call.communicate()
                 content = out
             except OSError:
-                print 'Can not execute the command'
+                logging.exception('Cannot execute the command')
                 content = ''
                 
             if not data['title']:
@@ -92,7 +95,7 @@ class BasePaste(object):
                 content = f.read()            
                 f.close()
             except IOError:
-                print 'File not present or unreadable'
+                logging.exception('File not present or unreadable')
                 content = ''
                 
             if not data['title']:
@@ -125,10 +128,10 @@ class BasePaste(object):
         else:
             req = urllib2.Request('%s?%s' %(self.URL, urlencoded_data))
 
-        if self.data['content']:
-            self.response = urllib2.urlopen(req)
-        else:
-            self.response = None
+        if not self.data['content']:
+            raise PasteException("No content to paste")
+
+        self.response = urllib2.urlopen(req)
         return self.response
 
     def process_response(self):
@@ -136,8 +139,7 @@ class BasePaste(object):
         Override this method for a custom procesing of response. In case the
         response url is required as paste url, no need to override this.
         '''        
-        response = self.response
-        return response.url if response else None
+        raise PasteException("Not implemented")
 
     def url(self):
         '''
@@ -148,10 +150,11 @@ class BasePaste(object):
         url = self.process_response()
         
         if url:
-            print 'Your paste has been published at %s' %(url)
+            logging.info('Your paste has been published at %s' %(url))
             return url
         else:
-            return None
+            logging.error('Did not get a URL back for the paste')
+            raise PasteException("No URL for paste")
 
     def __str__(self):
         return "%s" %(self.TITLE)
@@ -261,10 +264,11 @@ class PastebinPaste(BasePaste):
         'scilab': 'Scilab', 'epc': 'EPC', 'dot': 'DOT'
     }
 
-    def get_api_user_key(self, username=None, password=None):
+    def get_api_user_key(self, api_dev_key, username=None, password=None):
         '''
         Get api user key to enable posts from user accounts if username
         and password available.
+        Not getting an api_user_key means that the posts will be "guest" posts
         '''
         username = username or get_config('pastebin', 'api_user_name')
         password = password or get_config('pastebin', 'api_user_password')
@@ -272,17 +276,27 @@ class PastebinPaste(BasePaste):
             data = {
                 'api_user_name': username,
                 'api_user_password': password,
-                'api_dev_key': self.data['api_dev_key'],
+                'api_dev_key': api_dev_key,
             }
             urlencoded_data = urllib.urlencode(data)
             req = urllib2.Request('http://pastebin.com/api/api_login.php',
                                   urlencoded_data)
             response = urllib2.urlopen(req)
-            return response.read()
+            user_key = response.read()
+            logging.debug("User key: %s" % user_key)
+            return user_key
+        else:
+            logging.info("Pastebin: not using any user key")
+            return ""
 
     def process_response(self):
-        response = self.response
-        return self.response.read() if self.response else None
+        resp = self.response.read()
+        if "Bad API request" in resp:
+            raise PasteException("Error while submitting paste: %s" % resp)
+        elif len(resp) == 0:
+            raise PasteException("Pastebin did not return any data")
+        else:
+            return resp
 
     def process_data(self):
         self.data['api_paste_format'] = self.data['syntax'] or 'text'
@@ -300,18 +314,18 @@ class PastebinPaste(BasePaste):
         else:
             self.data['api_paste_expire_date'] = get_config('pastebin',
                                                             'api_paste_expire_date',
+                                                            False,
                                                             '1M')
-                                                         
-        self.data['api_dev_key'] = get_config('pastebin', 'api_dev_key',
-                                              raw_input("Enter your pastebin api key: "))
-                                   
         
-        if not self.data['api_dev_key']:
-            self.data['content']=''
-            print 'No pastebin api dev key supplied'
+        # api_dev_key supplied as an option?
+        if "api_dev_key" not in self.data or self.data['api_dev_key'] is None:
+            logging.debug("Reading api_dev_key from config")
+            self.data['api_dev_key'] = get_config('pastebin', 'api_dev_key', allow_empty_option=False)
 
+        assert self.data['api_dev_key'] is not None and len(self.data['api_dev_key']) > 0
+        logging.debug("Using %s as api_dev_key" % self.data['api_dev_key'])
         #Get the pastebin user key
-        self.data['api_user_key'] = self.get_api_user_key()
+        self.data['api_user_key'] = self.get_api_user_key(self.data['api_dev_key'])
         return self.data
 
 
@@ -322,7 +336,7 @@ register_service('pastebin', PastebinPaste)
 # Accessed through paster list <type>
 def list_services(data):
     for key in SERVICES.keys():
-        print '\t%s%s' %(key, '*' if key==data['service'] else '')
+        logging.info('\t%s%s' %(key, '*' if key==data['service'] else ''))
 
 def list_syntax(data):
     service = get_service(data)
@@ -330,7 +344,7 @@ def list_syntax(data):
 
 def list_configs(data):    
     for key in sorted(DEFAULTS.keys()):
-        print '\t%s: %s' %(key, DEFAULTS[key])
+        logging.info('\t%s: %s' %(key, DEFAULTS[key]))
         
 LISTS = {
     'services': list_services,

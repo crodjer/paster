@@ -57,6 +57,9 @@ def parse():
                              help='post output of file supplied as content')
     main_parser.add_argument('content', metavar='content', nargs=1,
                              type=str,default=[''], help='the content')
+    main_parser.add_argument('-k', '--api-key', metavar='api_key', dest='api_dev_key',
+                             type=str, help="for pastebin: api_dev_key")
+    main_parser.add_argument('--verbose', action='store_true', default=False)
     main_parser.set_defaults(func=paste)
 
     list_parser = subparsers.add_parser('list',
@@ -71,9 +74,13 @@ def parse():
     list_parser.set_defaults(func=list_details)
 
     args = parser.parse_args()
+
+    if "verbose" in args and args.verbose:
+        import logging
+        logging.getLogger().setLevel(logging.DEBUG)
                 
     #Get the paste service according to supplied argument
     try:
-        args.func(vars(args))
+        print args.func(vars(args))
     except KeyboardInterrupt:
         sys.exit(1)  
