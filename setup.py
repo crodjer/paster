@@ -19,30 +19,22 @@ try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+
 from sys import version
 from os.path import expanduser
+import paster
 
 if version < '2.2.3':
     from distutils.dist import DistributionMetadata
     DistributionMetadata.classifiers = None
     DistributionMetadata.download_url = None
 
-def long_description():
-    description = open('README.md').read()
-    try:
-        from markdown import markdown
-        description = markdown(description)
-    except ImportError:
-        pass
-    return long_description
-
-
 setup(name='paster',
-      version='0.7',
+      version=paster.version,
       description='A generic pastebin posting tool',
       author='Rohan Jain',
       author_email='crodjer@gmail.com',
-      long_description=long_description(),
+      long_description=open('README.md').read(),
       url='https://github.com/crodjer/paster',
       packages = ['paster'],
       data_files=[(expanduser('~'), ['paster.cfg']),],
