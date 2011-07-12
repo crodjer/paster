@@ -1,3 +1,4 @@
 12 July 2011
 Allow piping of paste content.
-Logging support (alq666 - https://github.com/alq666)
+Logging support (thanks to alq666 - https://github.com/alq666)
+Minor changes in argument flags (services-s, syntax -x)
