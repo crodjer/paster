@@ -21,24 +21,31 @@ Examples
 --------
 
 Paste some content
+
 > pstr paste "some content"
 
+Paste through the familiar piping
+
+> git diff | pstr paste
+
 Paste to the service pastebin
+
 > pstr paste -s pastebin "some content"
 
 Paste file contents (deprecated after piping support)
+
 > pstr paste -f path/to/file/filename.extension
 
 Paste git diff (deprecated after piping support)
+
 > pstr paste -c "git diff"
 
-Paste through the familiar piping
-> git diff | pstr paste
-
 List available syntax/languages/formats
+
 > pstr list syntax
 
 List available pastebin services
+
 > pstr list services
 
 For the lazy
