@@ -27,21 +27,30 @@ if version < '2.2.3':
     DistributionMetadata.classifiers = None
     DistributionMetadata.download_url = None
 
+def long_description():
+    description = open('README.md').read()
+    try:
+        from markdown import markdown
+        description = markdown(description)
+    except ImportError:
+        pass
+    return long_description
+
+
 setup(name='paster',
       version='0.7',
       description='A generic pastebin posting tool',
-      long_description=open('README.md').read(),
       author='Rohan Jain',
       author_email='crodjer@gmail.com',
+      long_description=long_description(),
       url='https://github.com/crodjer/paster',
       packages = ['paster'],
       data_files=[(expanduser('~'), ['paster.cfg']),],
       license="GPLv3",
       platforms=["all"],
       classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 4 - Beta',
           'Environment :: Console',
-          'Environment :: Plugins',
           'License :: OSI Approved :: GNU General Public License (GPL)',
           'Natural Language :: English',
           'Intended Audience :: End Users/Desktop',
@@ -49,6 +58,7 @@ setup(name='paster',
           'Intended Audience :: System Administrators',
           'Topic :: Software Development',
           'Programming Language :: Python',
+          'Natural Language :: English',
           ],
       scripts=['pstr'],
      )
