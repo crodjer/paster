@@ -15,7 +15,7 @@ Add support for more services easily
 Usage
 -----
 
-Use `pstr -h`, `pstr paste -h`, `pstr list -h` for help
+Do `pstr -h`, `pstr paste -h`, `pstr list -h` for help
 
 Examples
 --------
@@ -23,13 +23,13 @@ Examples
 Paste some content
 > pstr paste "some content"
 
-Paste to pastebin
-> pstr paste -v pastebin "some content"
+Paste to the service pastebin
+> pstr paste -s pastebin "some content"
 
-Paste file contents
+Paste file contents (deprecated after piping support)
 > pstr paste -f path/to/file/filename.extension
 
-Paste git diff
+Paste git diff (deprecated after piping support)
 > pstr paste -c "git diff"
 
 Paste through the familiar piping
@@ -41,9 +41,8 @@ List available syntax/languages/formats
 List available pastebin services
 > pstr list services
 
-
 For the lazy
 ------------
 
-  - Alias `pstr paste` to something like `p`
+  - Alias `pstr paste` to something like `p` and do `echo foo | p`
   - Use a config file to store settings
