@@ -1,9 +1,0 @@
-LICENCE
-README.md
-paster.cfg
-pstr
-setup.py
-paster/__init__.py
-paster/config.py
-paster/parser.py
-paster/services.py

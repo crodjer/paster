@@ -1,6 +1,6 @@
 *.pyc
 .*.swp
-MANIFEST.in
+MANIFEST
 dist/
 build/
 paster.egg-info
