@@ -18,7 +18,7 @@ import urllib2
 import subprocess
 import logging
 
-from paster.config import get_config, getboolean_config, DEFAULTS
+from paster.config import get_config, DEFAULTS
 
 GET = 1
 POST = 2
@@ -64,9 +64,14 @@ class BasePaste(object):
         '''
         Prints a list of available syntax for the current paste service
         '''
-        logging.info('Available syntax for %s:' %(self))
+        syntax_list = ['Available syntax for %s:' %(self)]
+        logging.info(syntax_list[0])
         for key in self.SYNTAX_DICT.keys():
-            logging.info('\t%-20s%-30s' %(key, self.SYNTAX_DICT[key]))
+            syntax = '\t%-20s%-30s' %(key, self.SYNTAX_DICT[key])
+            logging.info(syntax)
+            syntax_list.append(syntax)
+
+        return syntax_list
             
     def process_commmon(self):
         '''
@@ -178,6 +183,9 @@ class Dpaste(BasePaste):
         self.data['hold'] = 'on' if self.data['hold'] else ''
         self.data['language']= self.data['syntax']
         return self.data
+
+    def process_response(self):
+        return self.response.url
 
 class PastebinPaste(BasePaste):
     '''
@@ -335,16 +343,24 @@ register_service('pastebin', PastebinPaste)
 # The following functions perform the various listing tasks
 # Accessed through paster list <type>
 def list_services(data):
+    services = []
     for key in SERVICES.keys():
-        logging.info('\t%s%s' %(key, '*' if key==data['service'] else ''))
+        service = '\t%s%s' %(key, '*' if key==data['service'] else '')
+        logging.info(service)
+        services.append(service)
+    return services
 
 def list_syntax(data):
     service = get_service(data)
-    service.list_syntax()
+    return service.list_syntax()
 
-def list_configs(data):    
+def list_configs(data):
+    configs = []
     for key in sorted(DEFAULTS.keys()):
-        logging.info('\t%s: %s' %(key, DEFAULTS[key]))
+        config = '\t%-15s: %s' %(key, DEFAULTS[key])
+        logging.info(config)
+        configs.append(config)
+    return configs
         
 LISTS = {
     'services': list_services,
@@ -355,4 +371,4 @@ LISTS = {
 def list_details(data):
     #Called for sub-method `list`
     list_type = data['type'][0]
-    LISTS[list_type](data)
+    return '\n'.join(LISTS[list_type](data))

@@ -64,6 +64,7 @@ def parse():
 
     list_parser = subparsers.add_parser('list',
                                         help='list various available properties')
+    list_parser.add_argument('--verbose', action='store_true', default=False)
     list_parser.add_argument('-v', '--service', metavar='service ',
                              default=DEFAULTS['service'],
                              choices=SERVICES.keys(),
@@ -83,4 +84,4 @@ def parse():
     try:
         print args.func(vars(args))
     except KeyboardInterrupt:
-        sys.exit(1)  
+        sys.exit(1)
