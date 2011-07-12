@@ -79,7 +79,7 @@ def parse():
     if "verbose" in args and args.verbose:
         import logging
         logging.getLogger().setLevel(logging.DEBUG)
-                
+
     #Get the paste service according to supplied argument
     try:
         print args.func(vars(args))

@@ -42,7 +42,7 @@ def paste(data):
     return service.url()
 
 class PasteException(Exception): pass
-       
+
 class BasePaste(object):
     '''
     A base paste. Pastes directly based on the data from parsed args.
@@ -54,8 +54,8 @@ class BasePaste(object):
     #Dictionary of available syntax
     SYNTAX_DICT = {
     }
-    
-    data = {}    
+
+    data = {}
 
     def __init__(self, data):
         self.data = data
@@ -72,7 +72,7 @@ class BasePaste(object):
             syntax_list.append(syntax)
 
         return syntax_list
-            
+
     def process_commmon(self):
         '''
         Some data processing common for all services.
@@ -91,18 +91,18 @@ class BasePaste(object):
             except OSError:
                 logging.exception('Cannot execute the command')
                 content = ''
-                
+
             if not data['title']:
                 data['title'] = 'Output of command: `%s`' %(data_content)
         elif data['file']:
             try:
                 f = file(data_content)
-                content = f.read()            
+                content = f.read()
                 f.close()
             except IOError:
                 logging.exception('File not present or unreadable')
                 content = ''
-                
+
             if not data['title']:
                 data['title'] = 'File: `%s`' %(data_content)
         else:
@@ -112,7 +112,7 @@ class BasePaste(object):
 
         if not self.SYNTAX_DICT.get(self.data['syntax'], False):
             self.data['syntax'] = ''
-            
+
 
     def process_data(self):
         '''
@@ -126,7 +126,7 @@ class BasePaste(object):
         Returns response according submitted the data and method.
         '''
         self.process_commmon()
-        data = self.process_data()
+        self.process_data()
         urlencoded_data = urllib.urlencode(self.data)
         if self.METHOD == POST:
             req = urllib2.Request(self.URL, urlencoded_data)
@@ -143,7 +143,7 @@ class BasePaste(object):
         '''
         Override this method for a custom procesing of response. In case the
         response url is required as paste url, no need to override this.
-        '''        
+        '''
         raise PasteException("Not implemented")
 
     def url(self):
@@ -153,7 +153,7 @@ class BasePaste(object):
         '''
         self.get_response()
         url = self.process_response()
-        
+
         if url:
             logging.info('Your paste has been published at %s' %(url))
             return url
@@ -280,7 +280,7 @@ class PastebinPaste(BasePaste):
         '''
         username = username or get_config('pastebin', 'api_user_name')
         password = password or get_config('pastebin', 'api_user_password')
-        if username and password: 
+        if username and password:
             data = {
                 'api_user_name': username,
                 'api_user_password': password,
@@ -324,7 +324,7 @@ class PastebinPaste(BasePaste):
                                                             'api_paste_expire_date',
                                                             False,
                                                             '1M')
-        
+
         # api_dev_key supplied as an option?
         if "api_dev_key" not in self.data or self.data['api_dev_key'] is None:
             logging.debug("Reading api_dev_key from config")
@@ -361,7 +361,7 @@ def list_configs(data):
         logging.info(config)
         configs.append(config)
     return configs
-        
+
 LISTS = {
     'services': list_services,
     'syntax': list_syntax,

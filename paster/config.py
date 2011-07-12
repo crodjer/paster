@@ -16,8 +16,8 @@
 Parses the config settings to provide default post data info. Available and
 default configs:
 [user]
-name = 
-email = 
+name =
+email =
 
 [preferences]
 syntax =
@@ -34,7 +34,7 @@ import os
 import ConfigParser
 
 config = ConfigParser.ConfigParser()
-sources = config.read(['paster.cfg', '/etc/paster.cfg',             
+sources = config.read(['paster.cfg', '/etc/paster.cfg',
              os.path.expanduser('~/.pastercfg')])
 
 def get_config(section, option, allow_empty_option=True, default=""):
@@ -54,8 +54,8 @@ def getboolean_config(section, option, default=False):
     try:
         return config.getboolean(section, option) or default
     except ConfigParser.NoSectionError:
-        return default  
-    
+        return default
+
 
 name = get_config('user', 'name')
 email = get_config('user', 'email')
