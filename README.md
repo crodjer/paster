@@ -127,3 +127,10 @@ List available syntax/languages/formats
 
 List available pastebin services
 > pstr list services
+
+
+For the lazy
+------------
+
+  - Alias `pstr paste` to something small
+  - Use a config file to store settings

@@ -81,6 +81,8 @@ class BasePaste(object):
         data = self.data
         data_content = data['content'][0]
 
+        ## Paste the output of a command
+        # This is deprecated after piping support
         if data['command']:
             try:
                 call = subprocess.Popen(data_content.split(),
@@ -94,6 +96,9 @@ class BasePaste(object):
 
             if not data['title']:
                 data['title'] = 'Output of command: `%s`' %(data_content)
+
+        ## Paste the output of a file
+        # This is deprecated after piping support
         elif data['file']:
             try:
                 f = file(data_content)
@@ -171,12 +176,12 @@ class Dpaste(BasePaste):
     TITLE = 'Dpaste'
     URL = 'http://dpaste.com/'
     SYNTAX_DICT = {
-        'Xml': 'XML', 'Python': 'Python', 'Rhtml': 'Ruby HTML (ERB)',
-        'PythonConsole': 'Python Interactive/Traceback',
-        'JScript': 'JavaScript', 'Haskell': 'Haskell',
-        'Bash': 'Bash script', 'Sql': 'SQL', 'Apache': 'Apache Config',
-        'Diff': 'Diff', 'Ruby': 'Ruby', 'DjangoTemplate': 'Django Template/HTML',
-        'Css': 'CSS'
+        'xml': 'XML', 'python': 'Python', 'rhtml': 'Ruby HTML (ERB)',
+        'pyconsol': 'Python Interactive/Traceback',
+        'js': 'JavaScript', 'haskell': 'Haskell',
+        'bash': 'Bash script', 'Sql': 'SQL', 'Apache': 'Apache Config',
+        'diff': 'Diff', 'ruby': 'Ruby', 'djtemplate': 'Django Template/HTML',
+        'css': 'CSS'
     }
 
     def process_data(self):

@@ -15,19 +15,20 @@
 '''
 Parses the config settings to provide default post data info. Available and
 default configs:
-[user]
-name =
-email =
 
-[preferences]
-syntax =
-extra =
-title =
-service = dpaste
-hold = false
-command = false
-file = false
-private = false
+    [user]
+    name =
+    email =
+
+    [preferences]
+    syntax =
+    extra =
+    title =
+    service = dpaste
+    hold = false
+    command = false
+    file = false
+    private = false
 '''
 
 import os
@@ -38,6 +39,9 @@ sources = config.read(['paster.cfg', '/etc/paster.cfg',
              os.path.expanduser('~/.pastercfg')])
 
 def get_config(section, option, allow_empty_option=True, default=""):
+    '''
+    Get data from configs
+    '''
     try:
         value = config.get(section, option)
         if value is None or len(value) == 0:
@@ -51,6 +55,9 @@ def get_config(section, option, allow_empty_option=True, default=""):
         return default
 
 def getboolean_config(section, option, default=False):
+    '''
+    Get data from configs which store boolean records
+    '''
     try:
         return config.getboolean(section, option) or default
     except ConfigParser.NoSectionError:
@@ -74,6 +81,7 @@ command = getboolean_config('preferences', 'command')
 readfile = getboolean_config('preferences', 'file')
 private = getboolean_config('preferences', 'private')
 
+# Set the default values
 DEFAULTS = {
     'poster': poster,
     'service': service,
