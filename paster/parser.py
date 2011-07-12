@@ -81,7 +81,7 @@ def parse():
                              help='the property to be listed')
     list_parser.set_defaults(func=list_details)
 
-    parser.add_argument('-v', '--version', action='version', 
+    parser.add_argument('-v', '--version', action='version',
                         version='Paster version: %s' %(paster.version))
 
     args = parser.parse_args()
