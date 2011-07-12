@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2011  Rohan Jain
+# Copyright (C) 2011  Alexis Le-Quoc
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -14,8 +15,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 from sys import version
+from os.path import expanduser
 
 if version < '2.2.3':
     from distutils.dist import DistributionMetadata
@@ -23,14 +28,14 @@ if version < '2.2.3':
     DistributionMetadata.download_url = None
 
 setup(name='paster',
-      version='0.6',
+      version='0.7',
       description='A generic pastebin posting tool',
       long_description=open('README.md').read(),
       author='Rohan Jain',
       author_email='crodjer@gmail.com',
       url='https://github.com/crodjer/paster',
       packages = ['paster'],
-      data_files=[('/etc', ['paster.cfg']),],
+      data_files=[(expanduser('~'), ['paster.cfg']),],
       license="GPLv3",
       platforms=["all"],
       classifiers=[
