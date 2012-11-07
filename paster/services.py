@@ -114,10 +114,7 @@ class BasePaste(object):
             content = data_content
 
         self.data['content'] = content
-
-        if not self.SYNTAX_DICT.get(self.data['syntax'], False):
-            self.data['syntax'] = ''
-
+        self.data['syntax'] = self.SYNTAX_DICT.get(self.data['syntax'], '')
 
     def process_data(self):
         '''
