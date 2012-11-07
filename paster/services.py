@@ -116,6 +116,10 @@ class BasePaste(object):
         self.data['content'] = content
         self.data['syntax'] = self.SYNTAX_DICT.get(self.data['syntax'], '')
 
+        # Excluded data not useful in paste information
+        for key in ['func', 'verbose', 'service', 'extra', 'command', 'file']:
+            del self.data[key]
+
     def process_data(self):
         '''
         Override this method for custom processing of data according to the
@@ -184,6 +188,7 @@ class Dpaste(BasePaste):
     def process_data(self):
         self.data['hold'] = 'on' if self.data['hold'] else ''
         self.data['language']= self.data['syntax']
+        del self.data['syntax']
         return self.data
 
     def process_response(self):
