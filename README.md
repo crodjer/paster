@@ -52,4 +52,4 @@ For the lazy
 ------------
 
   - Alias `pstr paste` to something like `p` and do `echo foo | p`
-  - Use a config file to store settings
+  - Use a config file to store settings: `./paster.cfg`, `/etc/paster.cfg` or `~/.pastercfg`
